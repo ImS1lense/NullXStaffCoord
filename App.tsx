@@ -5,6 +5,7 @@ import { SectionWrapper } from './components/SectionWrapper';
 import { QuizField } from './components/QuizField';
 import { ProgressBar } from './components/ProgressBar';
 import { CustomModal } from './components/CustomModal';
+import { VisualCaptcha } from './components/VisualCaptcha';
 import { FormData } from './types';
 import { sendNotification } from './services/notificationService';
 
@@ -36,6 +37,9 @@ const App: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [modal, setModal] = useState({ isOpen: false, title: '', message: '' });
+  
+  // Captcha state
+  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
 
   const totalSteps = 5;
 
@@ -95,7 +99,12 @@ const App: React.FC = () => {
           formData.multiAccountAllowed.length > 0
         );
       case 5:
-        return formData.expectations.trim() !== '' && formData.duties.trim() !== '' && formData.deanonPunishment !== '';
+        return (
+          formData.expectations.trim() !== '' && 
+          formData.duties.trim() !== '' && 
+          formData.deanonPunishment !== '' &&
+          isCaptchaVerified
+        );
       default:
         return true;
     }
@@ -122,7 +131,11 @@ const App: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateStep()) {
-      setModal({ isOpen: true, title: "Ошибка", message: "Анкета заполнена не полностью. Проверьте все вопросы." });
+      if (!isCaptchaVerified) {
+         setModal({ isOpen: true, title: "Ошибка", message: "Пожалуйста, подтвердите, что вы не робот." });
+      } else {
+         setModal({ isOpen: true, title: "Ошибка", message: "Анкета заполнена не полностью. Проверьте все вопросы." });
+      }
       return;
     }
 
@@ -139,6 +152,7 @@ const App: React.FC = () => {
   const handleReset = () => {
     setFormData(initialFormState);
     setCurrentStep(1);
+    setIsCaptchaVerified(false);
     setIsSubmitted(false);
     setView('landing');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -188,7 +202,7 @@ const App: React.FC = () => {
 
         <div className="text-center max-w-4xl mb-16 px-4">
           <h1 className="text-6xl md:text-[90px] font-brand font-extrabold tracking-tighter leading-[0.9] mb-4 uppercase">
-            Null<span className="text-[#b000ff] ml-2">X</span><br />
+            Null<span className="text-[#b000ff] ml-3">X</span><br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6200ea] to-[#b000ff]">Staff</span>
           </h1>
           <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-10">
@@ -278,7 +292,7 @@ const App: React.FC = () => {
           </button>
 
           <h1 className="text-6xl md:text-7xl font-brand font-extrabold tracking-tighter mb-2 select-none uppercase">
-            Null<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6200ea] to-[#b000ff] ml-2">X</span>
+            Null<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6200ea] to-[#b000ff] ml-3">X</span>
           </h1>
           <div className="flex items-center justify-center gap-3 opacity-60">
              <span className="h-[1px] w-12 bg-gradient-to-r from-transparent to-white"></span>
@@ -300,7 +314,7 @@ const App: React.FC = () => {
                     <InputOnly placeholder="Ваш ник..." value={formData.nickname} onChange={handleInputChange('nickname')} required />
                   </div>
                   <div>
-                    <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 ml-1 font-bold">Discord ID</label>
+                    <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 ml-1 font-bold">Discord</label>
                     <InputOnly placeholder="user_tag" value={formData.discord} onChange={handleInputChange('discord')} required />
                   </div>
                   <div>
@@ -342,9 +356,8 @@ const App: React.FC = () => {
           {currentStep === 3 && (
             <div className="animate-in slide-in-from-right-8 duration-500 space-y-4">
               <QuizField 
-                question="Какое наказание за фразы 'ez', 'bezdar', 'slabak'? (Пункт 2.2)"
+                question="Какое наказание за фразы 'ez', 'bezdar', 'slabak'?"
                 selectedValue={formData.weaknessPunishment}
-                correctValue="no_punish"
                 onChange={handleQuizChange('weaknessPunishment')}
                 options={[
                   { label: 'MUTE до 30 минут', value: 'mute_30' },
@@ -353,9 +366,8 @@ const App: React.FC = () => {
                 ]}
               />
               <QuizField 
-                question="Разрешено ли рекламировать FunTime или HolyWorld? (Пункт 2.6)"
+                question="Разрешено ли рекламировать FunTime или HolyWorld?"
                 selectedValue={formData.mentionAllowedProjects}
-                correctValue="yes"
                 onChange={handleQuizChange('mentionAllowedProjects')}
                 options={[
                   { label: 'Да, эти проекты являются исключением', value: 'yes' },
@@ -363,9 +375,8 @@ const App: React.FC = () => {
                 ]}
               />
               <QuizField 
-                question="Наказание за прямое оскорбление модерации? (Пункт 2.4)"
+                question="Наказание за прямое оскорбление модерации?"
                 selectedValue={formData.insultModPunishment}
-                correctValue="mute_1d"
                 onChange={handleQuizChange('insultModPunishment')}
                 options={[
                   { label: 'MUTE до 1 дня', value: 'mute_1d' },
@@ -379,9 +390,8 @@ const App: React.FC = () => {
           {currentStep === 4 && (
             <div className="animate-in slide-in-from-right-8 duration-500 space-y-4">
                <QuizField 
-                question="Максимальное кол-во человек в команде? (Пункт 4.5)"
+                question="Максимальное кол-во человек в команде?"
                 selectedValue={formData.teamLimit}
-                correctValue="5"
                 onChange={handleQuizChange('teamLimit')}
                 options={[
                   { label: '3 человека', value: '3' },
@@ -390,9 +400,8 @@ const App: React.FC = () => {
                 ]}
               />
               <QuizField 
-                question="Разрешено ли использование мода BetterPvP? (Пункт 4.3)"
+                question="Разрешено ли использование мода BetterPvP?"
                 selectedValue={formData.betterPvpAllowed}
-                correctValue="no"
                 onChange={handleQuizChange('betterPvpAllowed')}
                 options={[
                   { label: 'Разрешен', value: 'yes' },
@@ -400,9 +409,8 @@ const App: React.FC = () => {
                 ]}
               />
               <QuizField 
-                question="Разрешено ли иметь мультиаккаунт на разных ТГ? (Пункт 3.4)"
+                question="Разрешено ли иметь мультиаккаунт на разных ТГ?"
                 selectedValue={formData.multiAccountAllowed}
-                correctValue="no"
                 onChange={handleQuizChange('multiAccountAllowed')}
                 options={[
                   { label: 'Да, разрешено', value: 'yes' },
@@ -432,9 +440,8 @@ const App: React.FC = () => {
               </SectionWrapper>
               
               <QuizField 
-                question="Наказание за деанон других игроков? (Пункт 2.7)"
+                question="Наказание за деанон других игроков?"
                 selectedValue={formData.deanonPunishment}
-                correctValue="permban"
                 onChange={handleQuizChange('deanonPunishment')}
                 options={[
                   { label: 'BAN на 7 дней', value: 'ban_7' },
@@ -442,6 +449,11 @@ const App: React.FC = () => {
                   { label: 'WARN', value: 'warn' }
                 ]}
               />
+
+              <div className="mt-8 flex flex-col items-center gap-4">
+                <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Подтверждение безопасности</p>
+                <VisualCaptcha onVerify={(val) => setIsCaptchaVerified(val)} />
+              </div>
             </div>
           )}
 
@@ -467,8 +479,12 @@ const App: React.FC = () => {
             ) : (
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="flex-[2] py-4 bg-gradient-to-r from-[#6200ea] to-[#b000ff] rounded-xl text-white font-extrabold uppercase tracking-widest text-[10px] hover:brightness-110 shadow-[0_0_30px_rgba(176,0,255,0.45)] transition-all active:scale-95 disabled:opacity-50"
+                disabled={isSubmitting || !isCaptchaVerified}
+                className={`flex-[2] py-4 rounded-xl text-white font-extrabold uppercase tracking-widest text-[10px] transition-all active:scale-95 shadow-lg ${
+                  isSubmitting || !isCaptchaVerified 
+                  ? 'bg-gray-800 opacity-50 cursor-not-allowed border border-gray-700' 
+                  : 'bg-gradient-to-r from-[#6200ea] to-[#b000ff] hover:brightness-110 shadow-[0_0_30px_rgba(176,0,255,0.45)]'
+                }`}
               >
                 {isSubmitting ? 'Загрузка...' : 'Подать заявку'}
               </button>
