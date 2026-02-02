@@ -1,20 +1,74 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+<img width="1200" height="475" alt="NullX Banner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+
+# NullX Staff
+
+[![Node.js](https://img.shields.io/badge/Node.js-20.x-green?style=for-the-badge&logo=node.js)](https://nodejs.org/)
+[![Status](https://img.shields.io/badge/Status-Active-blue?style=for-the-badge)](https://github.com/)
+[![NullX](https://img.shields.io/badge/Project-NullX-orange?style=for-the-badge)](https://nullx.com)
+
+**Инструментарий для тех, кто создает лучшую атмосферу.**
+
+[О проекте](#-о-проекте) • [Функционал](#-наша-миссия) • [Установка](#-запуск-проекта) • [Команда](#-присоединяйся)
+
+---
 </div>
 
-# Run and deploy your AI Studio app
+## 🛡️ О проекте
 
-This contains everything you need to run your app locally.
+Это официальный репозиторий инструментов для **NullX Staff**. Мы — сердце крупнейшего Minecraft проекта. Наша задача — обеспечивать комфортную игру для тысяч пользователей ежедневно.
 
-View your app in AI Studio: https://ai.studio/apps/temp/1
+> *"Мы не просто следим за чатом, мы создаем историю сервера вместе с игроками."*
 
-## Run Locally
+## 🎯 Наша миссия
 
-**Prerequisites:**  Node.js
+Мы объединяем усилия для достижения трех главных целей:
 
+| 🛠️ Техническая поддержка | ⚖️ Модерация | ✨ Атмосфера |
+| :--- | :--- | :--- |
+| Помогаем игрокам решать сложные технические вопросы и баги. | Обеспечиваем честный игровой процесс и следим за соблюдением правил. | Создаем дружелюбное комьюнити и поддерживаем дух приключений. |
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+---
+
+## 🚀 Запуск проекта
+
+Следуйте инструкции ниже, чтобы развернуть панель локально для разработки или тестирования.
+
+### Предварительные требования
+* **Node.js** (рекомендуется последняя LTS версия)
+* **Gemini API Key** (для работы AI-функций)
+
+### Инструкция по установке
+
+1.  **Установите зависимости:**
+    ```bash
+    npm install
+    ```
+
+2.  **Настройте окружение:**
+    Создайте файл `.env.local` в корне проекта и добавьте ваш ключ API:
+    ```env
+    GEMINI_API_KEY=ваш_ключ_здесь
+    ```
+
+3.  **Запустите приложение:**
+    ```bash
+    npm run dev
+    ```
+
+Приложение будет доступно по адресу: `http://localhost:3000` (или порт, указанный в консоли).
+
+---
+
+## 🤝 Присоединяйся
+
+Ты разбираешься в механиках Minecraft, умеешь находить общий язык с людьми или хочешь развиваться в управлении сообществом?
+
+**NullX Staff** — это отличная возможность прокачать свои навыки в команде профессионалов.
+
+<div align="center">
+
+### [ Подать заявку в команду ]
+*(Ссылка на форму или дискорд)*
+
+</div>
